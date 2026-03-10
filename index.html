@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagram Sistem Inventory PT. Bahari Global Machinery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        h1 {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        h2 {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 30px;
+            font-size: 14px;
+            font-weight: normal;
+        }
+        .diagram-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* DFD Styles */
+        .dfd-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .dfd-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        /* Entity */
+        .entity {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .entity-external {
+            background: #dbeafe;
+            border: 2px solid #3b82f6;
+            color: #1e40af;
+        }
+        .entity-process {
+            background: #dcfce7;
+            border: 2px solid #22c55e;
+            color: #166534;
+            border-radius: 50px;
+        }
+        .entity-data {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            color: #92400e;
+        }
+        
+        /* Flow Diagram */
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .flow-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .arrow {
+            color: #64748b;
+            font-size: 20px;
+        }
+        .arrow-down {
+            font-size: 24px;
+            color: #64748b;
+            text-align: center;
+        }
+        
+        /* Context Diagram */
+        .context-diagram {
+            position: relative;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .center-system {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+            position: relative;
+            z-index: 2;
+        }
+        .external-entity {
+            position: absolute;
+            padding: 15px 25px;
+            background: white;
+            border: 3px solid #3b82f6;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #1e40af;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .entity-admin { top: 20px; left: 50%; transform: translateX(-50%); }
+        .entity-staff { top: 50%; right: 20px; transform: translateY(-50%); }
+        .entity-customer { bottom: 20px; left: 50%; transform: translateX(-50%); }
+        .entity-supplier { top: 50%; left: 20px; transform: translateY(-50%); }
+        
+        .flow-line {
+            position: absolute;
+            background: #94a3b8;
+            z-index: 1;
+        }
+        .flow-label {
+            position: absolute;
+            font-size: 11px;
+            color: #64748b;
+            background: #f8fafc;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        
+        /* ERD Styles */
+        .erd-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .erd-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 2px solid #e2e8f0;
+        }
+        .erd-table-header {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 12px 15px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .erd-table-body {
+            padding: 10px 0;
+        }
+        .erd-field {
+            padding: 8px 15px;
+            font-size: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+        }
+        .erd-field:last-child {
+            border-bottom: none;
+        }
+        .erd-pk {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        .erd-fk {
+            color: #7c3aed;
+        }
+        .field-type {
+            color: #64748b;
+            font-size: 11px;
+        }
+        
+        /* Use Case */
+        .usecase-container {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .actor-section {
+            text-align: center;
+        }
+        .actor {
+            width: 60px;
+            margin: 0 auto 10px;
+        }
+        .actor-icon {
+            font-size: 50px;
+            color: #3b82f6;
+        }
+        .actor-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+        .usecase-list {
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 200px;
+        }
+        .usecase-item {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            border: 2px solid #e2e8f0;
+            text-align: center;
+        }
+        .usecase-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Flowchart */
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .flow-start, .flow-end {
+            background: #22c55e;
+            color: white;
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+        .flow-end {
+            background: #ef4444;
+        }
+        .flow-process {
+            background: #3b82f6;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .flow-decision {
+            background: #f59e0b;
+            color: white;
+            padding: 15px 20px;
+            transform: rotate(45deg);
+            font-weight: 600;
+        }
+        .flow-decision span {
+            display: block;
+            transform: rotate(-45deg);
+        }
+        .flow-arrow {
+            font-size: 24px;
+            color: #64748b;
+        }
+        
+        /* ABC Analysis */
+        .abc-visual {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        .abc-item {
+            text-align: center;
+        }
+        .abc-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .abc-a { background: linear-gradient(135deg, #22c55e, #16a34a); }
+        .abc-b { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .abc-c { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .abc-label {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .abc-desc {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        /* Min-Max Visual */
+        .minmax-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .stock-bar {
+            width: 300px;
+            height: 40px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        .stock-level {
+            height: 100%;
+            border-radius: 8px;
+        }
+        .stock-red { background: linear-gradient(90deg, #ef4444, #dc2626); width: 20%; }
+        .stock-yellow { background: linear-gradient(90deg, #f59e0b, #d97706); width: 50%; }
+        .stock-green { background: linear-gradient(90deg, #22c55e, #16a34a); width: 80%; }
+        .stock-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #22c55e; }
+        
+        /* Print */
+        @media print {
+            body { padding: 10px; }
+            .dfd-section { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Diagram Sistem Inventory PT. Bahari Global Machinery</h1>
+    <h2>Min-Max & Forecasting</h2>
+    
+    <div class="diagram-container">
+        
+        <!-- 1. Context Diagram -->
+        <div class="dfd-section">
+            <div class="dfd-title">1. Context Diagram (DFD Level 0)</div>
+            <div class="context-diagram">
+                <div class="external-entity entity-admin">👤 Admin</div>
+                <div class="external-entity entity-staff">👥 Staff</div>
+                <div class="external-entity entity-customer">🏢 Customer</div>
+                <div class="external-entity entity-supplier">🚚 Supplier</div>
+                <div class="center-system">
+                    📦<br>
+                    SISTEM<br>
+                    INVENTORY<br>
+                    ABC
+                </div>
+            </div>
+            <div class="legend">
+                <div class="legend-item"><strong>Admin:</strong> Kelola data master, transaksi, user</div>
+                <div class="legend-item"><strong>Staff:</strong> Lihat stok, laporan, forecasting</div>
+                <div class="legend-item"><strong>Customer:</strong> Penerima barang</div>
+                <div class="legend-item"><strong>Supplier:</strong> Pemasok barang</div>
+            </div>
+        </div>
+        
+        <!-- 2. Use Case Diagram -->
+        <div class="dfd-section">
+            <div class="dfd-title">2. Use Case Diagram</div>
+            <div class="usecase-container">
+                <div class="actor-section">
+                    <div class="actor-icon">👤</div>
+                    <div class="actor-name">Admin</div>
+                    <div class="usecase-list">
+                        <div class="usecase-item">📦 Kelola Data Barang</div>
+                        <div class="usecase-item">👥 Kelola Customer</div>
+                        <div class="usecase-item">💰 Catat Penjualan</div>
+                        <div class="usecase-item">📋 Buat Pemesanan</div>
+                        <div class="usecase-item">📥 Catat Penerimaan</div>
+                        <div class="usecase-item">👨‍💼 Kelola Sales</div>
+                        <div class="usecase-item">🔐 Kelola User</div>
+                        <div class="usecase-item">⚙️ Hitung ABC</div>
+                        <div class="usecase-item">📊 Set Min-Max</div>
+                    </div>
+                </div>
+                <div class="actor-section">
+                    <div class="actor-icon">👥</div>
+                    <div class="actor-name">Staff</div>
+                    <div class="usecase-list">
+                        <div class="usecase-item">📦 Lihat Stok Barang</div>
+                        <div class="usecase-item">📊 Lihat Analisis ABC</div>
+                        <div class="usecase-item">📈 Lihat Min-Max</div>
+                        <div class="usecase-item">📉 Lihat Forecasting</div>
+                        <div class="usecase-item">📄 Cetak Laporan</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 3. ERD -->
+        <div class="dfd-section">
+            <div class="dfd-title">3. Entity Relationship Diagram (ERD)</div>
+            <div class="erd-container">
+                <div class="erd-table">
+                    <div class="erd-table-header">📦 BARANG</div>
+                    <div class="erd-table-body">
+                        <div class="erd-field"><span class="erd-pk">🔑 id</span> <span class="field-type">INT PK</span></div>
+                        <div class="erd-field"><span>kode_barang</span> <span class="field-type">VARCHAR</span></div>
+                        <div class="erd-field"><span>nama_barang</span> <span class="field-type">VARCHAR</span></div>
+                        <div class="erd-field"><span>satuan</span> <span class="field-type">ENUM</span></div>
+                        <div class="erd-field"><span>harga_jual</span> <span class="field-type">DECIMAL</span></div>
+                        <div class="erd-field"><span>stok</span> <span class="field-type">INT</span></div>
+                        <div class="erd-field"><span>stok_min</span> <span class="field-type">INT</span></div>
+                        <div class="erd-field"><span>stok_max</span> <span class="field-type">INT</span></div>
+                        <div class="erd-field"><span>kategori_abc</span> <span class="field-type">ENUM</span></div>
+                    </div>
+                </div>
+                <div class="erd-table">
+                    <div class="erd-table-header">👥 CUSTOMER</div>
+                    <div class="erd-table-body">
+                        <div class="erd-field"><span class="erd-pk">🔑 id</span> <span class="field-type">INT PK</span></div>
+                        <div class="erd-field"><span>kode_customer</span> <span class="field-type">VARCHAR</span></div>
+                        <div class="erd-field"><span>nama_customer</span> <span class="field-type">VARCHAR</span></div>
+                        <div class="erd-field"><span>nomor_container</span> <span class="field-type">VARCHAR</span></div>
+                        <div class="erd-field"><span>alamat</span> <span class="field-type">TEXT</span></div>
+                        <div class="erd-field"><span>telepon</span> <span class="field-type">VARCHAR</span></div>
+                    </div>
+                </div>
+                <div class="erd-table">
+                    <div class="erd-table-header">💰 PENJUALAN</div>
+                    <div class="erd-table-body">
+                        <div class="erd-field"><span class="erd-pk">🔑 id</span> <span class="field-type">INT PK</span></div>
+                        <div class="erd-field"><span>kode_penjualan</span> <span class="field-type">VARCHAR</span></div>
+                        <div class="erd-field"><span>tanggal</span> <span class="field-type">DATE</span></div>
+                        <div class="erd-field"><span class="erd-fk">🔗 id_barang</span> <span class="field-type">INT FK</span></div>
+                        <div class="erd-field"><span>jumlah</span> <span class="field-type">INT</span></div>
+                        <div class="erd-field"><span class="erd-fk">🔗 id_sales</span> <span class="field-type">INT FK</span></div>
+                    </div>
+                </div>
+                <div class="erd-table">
+                    <div class="erd-table-header">👨‍💼 SALES</div>
+                    <div class="erd-table-body">
+                        <div class="erd-field"><span class="erd-pk">🔑 id</span> <span class="field-type">INT PK</span></div>
+                        <div class="erd-field"><span>kode_sales</span> <span class="field-type">VARCHAR</span></div>
+                        <div class="erd-field"><span>nama_sales</span> <span class="field-type">VARCHAR</span></div>
+                        <div class="erd-field"><span>telepon</span> <span class="field-type">VARCHAR</span></div>
+                    </div>
+                </div>
+                <div class="erd-table">
+                    <div class="erd-table-header">📋 PEMESANAN</div>
+                    <div class="erd-table-body">
+                        <div class="erd-field"><span class="erd-pk">🔑 id</span> <span class="field-type">INT PK</span></div>
+                        <div class="erd-field"><span>kode_pemesanan</span> <span class="field-type">VARCHAR</span></div>
+                        <div class="erd-field"><span>tanggal</span> <span class="field-type">DATE</span></div>
+                        <div class="erd-field"><span class="erd-fk">🔗 id_barang</span> <span class="field-type">INT FK</span></div>
+                        <div class="erd-field"><span>jumlah</span> <span class="field-type">INT</span></div>
+                        <div class="erd-field"><span>status</span> <span class="field-type">ENUM</span></div>
+                    </div>
+                </div>
+                <div class="erd-table">
+                    <div class="erd-table-header">📥 PENERIMAAN</div>
+                    <div class="erd-table-body">
+                        <div class="erd-field"><span class="erd-pk">🔑 id</span> <span class="field-type">INT PK</span></div>
+                        <div class="erd-field"><span>kode_penerimaan</span> <span class="field-type">VARCHAR</span></div>
+                        <div class="erd-field"><span>tanggal</span> <span class="field-type">DATE</span></div>
+                        <div class="erd-field"><span class="erd-fk">🔗 id_barang</span> <span class="field-type">INT FK</span></div>
+                        <div class="erd-field"><span>jumlah</span> <span class="field-type">INT</span></div>
+                    </div>
+                </div>
+                <div class="erd-table">
+                    <div class="erd-table-header">🔐 USERS</div>
+                    <div class="erd-table-body">
+                        <div class="erd-field"><span class="erd-pk">🔑 id</span> <span class="field-type">INT PK</span></div>
+                        <div class="erd-field"><span>username</span> <span class="field-type">VARCHAR</span></div>
+                        <div class="erd-field"><span>password</span> <span class="field-type">VARCHAR</span></div>
+                        <div class="erd-field"><span>nama_lengkap</span> <span class="field-type">VARCHAR</span></div>
+                        <div class="erd-field"><span>role</span> <span class="field-type">ENUM</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 4. Metode ABC -->
+        <div class="dfd-section">
+            <div class="dfd-title">4. Diagram Metode ABC</div>
+            <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Klasifikasi barang berdasarkan nilai penjualan</p>
+            <div class="abc-visual">
+                <div class="abc-item">
+                    <div class="abc-circle abc-a">
+                        <span style="font-size: 24px;">A</span>
+                        <span style="font-size: 12px;">70%</span>
+                    </div>
+                    <div class="abc-label">Kategori A</div>
+                    <div class="abc-desc">Barang Penting</div>
+                    <div class="abc-desc">Banyak Dibeli</div>
+                </div>
+                <div class="abc-item">
+                    <div class="abc-circle abc-b">
+                        <span style="font-size: 24px;">B</span>
+                        <span style="font-size: 12px;">20%</span>
+                    </div>
+                    <div class="abc-label">Kategori B</div>
+                    <div class="abc-desc">Cukup Penting</div>
+                    <div class="abc-desc">Jarang Dibeli</div>
+                </div>
+                <div class="abc-item">
+                    <div class="abc-circle abc-c">
+                        <span style="font-size: 24px;">C</span>
+                        <span style="font-size: 12px;">10%</span>
+                    </div>
+                    <div class="abc-label">Kategori C</div>
+                    <div class="abc-desc">Kurang Penting</div>
+                    <div class="abc-desc">Sangat Jarang</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 5. Min-Max -->
+        <div class="dfd-section">
+            <div class="dfd-title">5. Diagram Metode Min-Max</div>
+            <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Indikator status stok berdasarkan batas minimum dan maksimum</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="width: 100px; text-align: right; font-weight: 600; color: #ef4444;">🔴 RESTOCK</span>
+                    <div class="stock-bar">
+                        <div class="stock-level stock-red">
+                            <span class="stock-label">Stok ≤ Min</span>
+                        </div>
+                    </div>
+                    <span style="font-size: 12px; color: #64748b;">Harus segera order</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="width: 100px; text-align: right; font-weight: 600; color: #f59e0b;">🟡 MENIPIS</span>
+                    <div class="stock-bar">
+                        <div class="stock-level stock-yellow">
+                            <span class="stock-label">Stok Mendekati Min</span>
+                        </div>
+                    </div>
+                    <span style="font-size: 12px; color: #64748b;">Perlu perhatian</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="width: 100px; text-align: right; font-weight: 600; color: #22c55e;">🟢 AMAN</span>
+                    <div class="stock-bar">
+                        <div class="stock-level stock-green">
+                            <span class="stock-label">Stok Aman</span>
+                        </div>
+                    </div>
+                    <span style="font-size: 12px; color: #64748b;">Tidak perlu order</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; text-align: center; padding: 20px; background: #f1f5f9; border-radius: 10px;">
+                <strong>Rumus Rekomendasi Order:</strong><br>
+                <code style="background: white; padding: 10px 20px; border-radius: 5px; display: inline-block; margin-top: 10px;">
+                    Jumlah Order = Stok Maksimum - Stok Saat Ini
+                </code>
+            </div>
+        </div>
+        
+        <!-- 6. Flowchart Forecasting -->
+        <div class="dfd-section">
+            <div class="dfd-title">6. Flowchart Forecasting (Simple Moving Average)</div>
+            <div class="flowchart">
+                <div class="flow-start">MULAI</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-process">Ambil Data Penjualan 3 Bulan Terakhir</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-process">Hitung Rata-rata Penjualan</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-process" style="background: #f59e0b;">Prediksi = (Bulan1 + Bulan2 + Bulan3) / 3</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-process">Tampilkan Grafik & Rekomendasi Stok</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-end">SELESAI</div>
+            </div>
+        </div>
+        
+        <!-- 7. DFD Level 1 -->
+        <div class="dfd-section">
+            <div class="dfd-title">7. Data Flow Diagram (DFD Level 1)</div>
+            <div class="flow-container">
+                <div class="flow-row">
+                    <span class="entity entity-external">👤 Admin</span>
+                    <span class="arrow">→</span>
+                    <span class="entity entity-process">1.0 Login</span>
+                    <span class="arrow">→</span>
+                    <span class="entity entity-data">📁 Users</span>
+                </div>
+                <div class="flow-row">
+                    <span class="entity entity-external">👤 Admin</span>
+                    <span class="arrow">→</span>
+                    <span class="entity entity-process">2.0 Kelola Barang</span>
+                    <span class="arrow">→</span>
+                    <span class="entity entity-data">📁 Barang</span>
+                </div>
+                <div class="flow-row">
+                    <span class="entity entity-external">👤 Admin</span>
+                    <span class="arrow">→</span>
+                    <span class="entity entity-process">3.0 Catat Penjualan</span>
+                    <span class="arrow">→</span>
+                    <span class="entity entity-data">📁 Penjualan</span>
+                </div>
+                <div class="flow-row">
+                    <span class="entity entity-data">📁 Penjualan</span>
+                    <span class="arrow">→</span>
+                    <span class="entity entity-process">4.0 Hitung ABC</span>
+                    <span class="arrow">→</span>
+                    <span class="entity entity-data">📁 Barang (Update Kategori)</span>
+                </div>
+                <div class="flow-row">
+                    <span class="entity entity-data">📁 Barang</span>
+                    <span class="arrow">→</span>
+                    <span class="entity entity-process">5.0 Cek Min-Max</span>
+                    <span class="arrow">→</span>
+                    <span class="entity entity-external">👥 Staff (Lihat Status)</span>
+                </div>
+                <div class="flow-row">
+                    <span class="entity entity-data">📁 Penjualan</span>
+                    <span class="arrow">→</span>
+                    <span class="entity entity-process">6.0 Forecasting</span>
+                    <span class="arrow">→</span>
+                    <span class="entity entity-external">👥 Staff (Lihat Prediksi)</span>
+                </div>
+                <div class="flow-row">
+                    <span class="entity entity-data">📁 Semua Data</span>
+                    <span class="arrow">→</span>
+                    <span class="entity entity-process">7.0 Cetak Laporan</span>
+                    <span class="arrow">→</span>
+                    <span class="entity entity-external">👤 Admin / 👥 Staff</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div style="text-align: center; margin-top: 30px; color: #64748b; font-size: 12px;">
+        <p>Sistem Inventory ABC - Min-Max & Forecasting</p>
+        <p>© 2024 - Dibuat dengan PHP Native</p>
+    </div>
+</body>
+</html>
